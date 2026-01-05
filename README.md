@@ -1,4 +1,4 @@
-#hypr-dots
+# hypr-dots
 
 
 
