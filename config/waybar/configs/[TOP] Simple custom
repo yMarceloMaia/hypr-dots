@@ -1,0 +1,59 @@
+/* ---- 💫 https://github.com/JaKooLit 💫 ---- */
+// ### TOP Simple ## //
+{
+	"include": [
+		"$HOME/.config/waybar/Modules",
+		"$HOME/.config/waybar/ModulesWorkspaces",
+		"$HOME/.config/waybar/ModulesCustom",
+		"$HOME/.config/waybar/ModulesGroups",
+		"$HOME/.config/waybar/UserModules",
+	],
+	"layer": "top",
+	"position": "top",
+	"mode": "dock",
+	"exclusive": true,
+	"passthrough": false,
+	"gtk-layer-shell": true,
+	"margin-left": 6,
+	"margin-right": 6,
+	"margin-top": 2,
+	"spacing": 0,
+	"cpu#forest": {
+		"format": "Cpu  󰍛  {usage}%",
+		"interval": 1,
+		"min-length": 5,
+		"format-alt-click": "click",
+		"format-alt": "{icon0}{icon1}{icon2}{icon3} {usage:>2}% 󰍛",
+		"format-icons": [
+			"▁",
+			"▂",
+			"▃",
+			"▄",
+			"▅",
+			"▆",
+			"▇",
+			"█"
+		],
+		"on-click-right": "gnome-system-monitor",
+	},
+	"modules-left": [
+		"hyprland/workspaces#rw",
+		"mpris",
+	],
+	"modules-center": [
+		"custom/screenshare",
+		"clock#2",
+		"group/notify",
+	],
+	"modules-right": [
+		"hyprland/window",
+		"custom/weather",
+		"cpu#forest",
+		"battery",
+		"group/audio",
+		"custom/nightlight",
+		"idle_inhibitor",
+		"tray",
+		"custom/power",
+	],
+}
