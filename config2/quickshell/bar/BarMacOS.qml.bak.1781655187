@@ -1,0 +1,92 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// BarMacOS — a compact, macOS-like top bar (alternative to BarSlot).
+// Launcher (bob2 → control center) pinned left; clock + status group pinned right.
+// Reuses the existing *Widget modules (they all take `root: theme`), so the widget
+// visibility toggles (mod*) keep working here too. No drag/splits/island — by design.
+// Selected via theme.barStyle === "macos" (shell.qml Loader).
+// ─────────────────────────────────────────────────────────────────────────────
+import QtQuick
+import Quickshell
+import Quickshell.Wayland
+import Quickshell.Io
+import "modules"
+
+PanelWindow {
+    id: bar
+    required property var root
+
+    color: "transparent"
+    anchors { top: true; left: true; right: true }
+    implicitHeight: 34
+    exclusionMode: ExclusionMode.Normal
+    exclusiveZone: 34
+
+    // keep Hyprland awake while the idle-inhibitor toggle is on (same as BarSlot)
+    IdleInhibitor { window: bar; enabled: bar.root.idleInhibited }
+
+    // hide the whole bar (and release its reserved space) when toggled off
+    visible: !bar.root.barHidden
+
+    // ── translucent rounded background strip (single surface, no per-widget pills) ──
+    Rectangle {
+        id: strip
+        anchors.fill: parent
+        anchors.margins: 4
+        radius: 10
+        color: bar.root.bg
+        border.color: bar.root.sep
+        border.width: 1
+    }
+
+    // ── LEFT: launcher (bob2 → control center) ──
+    Item {
+        id: leftGroup
+        anchors.left: strip.left
+        anchors.leftMargin: 6
+        anchors.verticalCenter: strip.verticalCenter
+        height: 28
+        width: childrenRect.width
+
+        Row {
+            spacing: 6
+            anchors.verticalCenter: parent.verticalCenter
+            LauncherWidget { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+        }
+    }
+
+    // ── RIGHT: status group + clock, grouped together (macOS menu-bar feel) ──
+    Item {
+        id: rightGroup
+        anchors.right: strip.right
+        anchors.rightMargin: 10
+        anchors.verticalCenter: strip.verticalCenter
+        height: 28
+        width: rightRow.implicitWidth
+
+        Row {
+            id: rightRow
+            spacing: 10
+            anchors.verticalCenter: parent.verticalCenter
+
+            // Each widget self-hides via its mod* flag (implicitWidth → 0), and the
+            // Row's spacing collapses naturally. Order: app state → media → tray →
+            // notifications → status → clock (rightmost, like macOS).
+            WorkspaceWidget       { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            MprisWidget           { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            ScreenRecordWidget    { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            ArchUpdaterWidget     { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            TrayWidget            { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            NotificationWidget    { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            IdleInhibitorWidget   { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            ThemeDisplayWidget    { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            MediaBrowserWidget    { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            CpuWidget             { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            MemoryWidget          { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            WeatherWidget         { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            NetworkWidget         { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            AudioWidget           { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            BatteryWidget         { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+            ClockWidget           { root: bar.root; anchors.verticalCenter: parent.verticalCenter }
+        }
+    }
+}
